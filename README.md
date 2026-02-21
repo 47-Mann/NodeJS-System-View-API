@@ -127,6 +127,7 @@ Simulates a memory leak by adding data to an in-memory array. Use for testing me
 
 The application uses ES modules (`"type": "module"` in package.json).
 
-## License
+## Developed By
+SAHIL MANN
 
-MIT
+
