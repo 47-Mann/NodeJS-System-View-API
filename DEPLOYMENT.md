@@ -57,7 +57,7 @@ Railway is the easiest option for quick deployment.
 3. **Add MongoDB Plugin:**
    - In Railway dashboard, click "Add" (near Services)
    - Select "Database" → "MongoDB"
-   - It will auto-generate a `DATABASE_URL` connection string
+   - It will auto-generate a Mongo connection variable (often `MONGO_URL` or `DATABASE_URL`)
 
 4. **Set Environment Variables:**
    - Go to "Variables" tab
@@ -66,8 +66,9 @@ Railway is the easiest option for quick deployment.
      PORT=5050
      NODE_ENV=production
      JWT_SECRET=<your-generated-secret>
-     MONGODB_URI=<your-mongodb-atlas-url>
+     MONGODB_URI=<your-mongodb-connection-string>
      ```
+   - If Railway generated `MONGO_URL` or `DATABASE_URL`, copy that value into `MONGODB_URI` (or use the app's fallback support for `MONGO_URL` / `MONGODB_URL` / `DATABASE_URL`).
 
 5. **Deploy:**
    - Railway auto-deploys your `main` branch
