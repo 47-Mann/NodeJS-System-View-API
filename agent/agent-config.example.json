@@ -1,0 +1,6 @@
+{
+  "dashboardUrl": "http://localhost:5050",
+  "serverId": "YOUR_SERVER_ID_HERE",
+  "serverToken": "YOUR_SERVER_TOKEN_HERE",
+  "intervalMs": 5000
+}
