@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const statSchema = new mongoose.Schema(
   {
+    serverId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Server",
+    },
     cpu: Object,
     memory: Object,
     os: Object,

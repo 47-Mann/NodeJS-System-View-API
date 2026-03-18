@@ -6,6 +6,8 @@ import express from "express";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import systemRoutes from "./routes/systemRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import serverRoutes from "./routes/serverRoutes.js";
 import { connectDB } from "./config/db.js";
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
 import { initializeSocketServer } from "./socket/socketServer.js";
@@ -32,6 +34,7 @@ function toPositiveNumber(value, fallbackValue) {
 }
 
 app.use(morgan("combined"));
+app.use(express.json());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -43,6 +46,8 @@ const limiter = rateLimit({
 
 app.use(limiter);
 app.use("/dashboard", express.static(publicDirectory));
+app.use("/api/auth", authRoutes);
+app.use("/api/servers", serverRoutes);
 app.use("/", systemRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
