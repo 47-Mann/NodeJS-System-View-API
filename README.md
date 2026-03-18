@@ -1,6 +1,6 @@
 # System View API
 
-A multi-server system monitoring dashboard with JWT authentication. Monitor CPU, memory, OS, and process information across multiple remote servers from a centralized dashboard.
+A multi-server system monitoring dashboard. Monitor CPU, memory, OS, and process information across multiple remote servers from a centralized dashboard.
 
 ## Features
 
