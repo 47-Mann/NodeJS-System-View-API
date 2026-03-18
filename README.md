@@ -276,6 +276,8 @@ Authorization: Bearer <server-token>
 
 - `GET /` - Redirects to `/dashboard`
 - `GET /dashboard` - View the dashboard UI
+- `GET /dashboard/login` - Returns guidance JSON (authentication is API-only via `POST /api/auth/login`)
+- `GET /api` - API index with endpoint navigation
 - `GET /cpu` - CPU info (legacy endpoint)
 - `GET /memory` - Memory info (legacy endpoint)
 - `GET /health` - Health check

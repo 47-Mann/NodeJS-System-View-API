@@ -14,6 +14,49 @@ export function getRoot(req, res) {
   res.redirect("/dashboard");
 }
 
+export function getApiIndex(req, res) {
+  res.json({
+    name: "System View API",
+    dashboard: {
+      url: "/dashboard",
+      note: "No UI login page exists. Authentication is API-based via /api/auth.",
+    },
+    auth: {
+      base: "/api/auth",
+      endpoints: {
+        register: "POST /api/auth/register",
+        login: "POST /api/auth/login",
+        me: "GET /api/auth/me (Bearer token required)",
+      },
+    },
+    servers: {
+      base: "/api/servers",
+      endpoints: {
+        createServer: "POST /api/servers (Bearer token required)",
+        listServers: "GET /api/servers (Bearer token required)",
+        getServerWithStats:
+          "GET /api/servers/:serverId (Bearer token required)",
+        deleteServer: "DELETE /api/servers/:serverId (Bearer token required)",
+        reportFromAgent:
+          "POST /api/servers/:serverId/report (Server token required)",
+      },
+    },
+    system: {
+      endpoints: [
+        "GET /health",
+        "GET /monitor",
+        "GET /stats",
+        "GET /cpu",
+        "GET /memory",
+        "GET /os",
+        "GET /user",
+        "GET /network",
+        "GET /process",
+      ],
+    },
+  });
+}
+
 export function getCPUInfo(req, res) {
   res.json(getCPU());
 }

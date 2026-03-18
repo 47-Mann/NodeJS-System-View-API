@@ -45,6 +45,14 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+app.get("/dashboard/login", (req, res) => {
+  res.status(404).json({
+    error: "Not Found",
+    message:
+      "No dashboard login page exists. Use POST /api/auth/login for authentication.",
+    apiIndex: "/api",
+  });
+});
 app.use("/dashboard", express.static(publicDirectory));
 app.use("/api/auth", authRoutes);
 app.use("/api/servers", serverRoutes);

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  getApiIndex,
   getCPUInfo,
   getHealth,
   getMemoryInfo,
@@ -16,6 +17,7 @@ import {
 const router = Router();
 
 router.get("/", getRoot);
+router.get("/api", getApiIndex);
 router.get("/cpu", getCPUInfo);
 router.get("/memory", getMemoryInfo);
 router.get("/os", getOSInfo);
