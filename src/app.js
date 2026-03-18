@@ -6,8 +6,6 @@ import express from "express";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import systemRoutes from "./routes/systemRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
-import serverRoutes from "./routes/serverRoutes.js";
 import { connectDB } from "./config/db.js";
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
 import { initializeSocketServer } from "./socket/socketServer.js";
@@ -45,17 +43,7 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-app.get("/dashboard/login", (req, res) => {
-  res.status(404).json({
-    error: "Not Found",
-    message:
-      "No dashboard login page exists. Use POST /api/auth/login for authentication.",
-    apiIndex: "/api",
-  });
-});
 app.use("/dashboard", express.static(publicDirectory));
-app.use("/api/auth", authRoutes);
-app.use("/api/servers", serverRoutes);
 app.use("/", systemRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
