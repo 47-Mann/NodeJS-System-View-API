@@ -9,11 +9,6 @@ A dashboard-only Node.js system monitor with realtime CPU and memory updates, pl
 - Snapshot persistence to MongoDB on an interval
 - Automatic cleanup of old records
 
-## What was removed
-
-- JWT authentication
-- User and server enrollment APIs
-- Remote agent flow
 
 ## Quick Start
 
