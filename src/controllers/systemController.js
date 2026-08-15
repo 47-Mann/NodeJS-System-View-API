@@ -1,4 +1,8 @@
-import { getRecentStats, getSystemMonitor } from "../services/systemService.js";
+import {
+  clearAllStats,
+  getRecentStats,
+  getSystemMonitor,
+} from "../services/systemService.js";
 
 export function getRoot(req, res) {
   res.redirect("/dashboard");
@@ -12,6 +16,15 @@ export async function getStats(req, res, next) {
   try {
     const stats = await getRecentStats(100);
     res.json(stats);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function clearStats(req, res, next) {
+  try {
+    const deletedCount = await clearAllStats();
+    res.json({ deletedCount, message: "All stored stats cleared." });
   } catch (error) {
     next(error);
   }

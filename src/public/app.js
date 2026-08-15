@@ -34,6 +34,14 @@ function clampPercent(value) {
   return Math.max(0, Math.min(100, parsed));
 }
 
+function safeValue(value, fallback = "--") {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
+
+  return String(value);
+}
+
 function updateProgress(element, value) {
   element.style.width = `${clampPercent(value)}%`;
 }
@@ -55,6 +63,45 @@ function formatDate(value) {
     dateStyle: "medium",
     timeStyle: "medium",
   }).format(new Date(value));
+}
+
+function resetDashboardState() {
+  setConnectionStatus(socketStatus, "Connecting...", false);
+  setConnectionStatus(healthStatus, "Loading...", false);
+
+  cpuLive.textContent = "--%";
+  memoryLive.textContent = "--%";
+  hostname.textContent = "--";
+  nodeVersion.textContent = "--";
+  cpuModel.textContent = "--";
+  cpuCores.textContent = "--";
+  memoryUsage.textContent = "--";
+  processRss.textContent = "--";
+  osPlatform.textContent = "-- / --";
+  osUptime.textContent = "--";
+  recordsTotal.textContent = "0";
+  lastCollected.textContent = "--";
+  latestUpdatePill.textContent = "Waiting for data";
+  recordsCount.textContent = "0 records";
+  cpuPulseLabel.textContent = "--%";
+  memoryPulseLabel.textContent = "--%";
+  runtimeInsight.textContent = "Waiting for first socket event...";
+
+  updateProgress(cpuBar, 0);
+  updateProgress(memoryBar, 0);
+  updateProgress(cpuPulseBar, 0);
+  updateProgress(memoryPulseBar, 0);
+
+  statsTableBody.innerHTML =
+    '<tr><td colspan="5" class="empty-state">Loading records...</td></tr>';
+}
+
+async function clearStoredDashboardData() {
+  try {
+    await fetch("/stats", { method: "DELETE" });
+  } catch (error) {
+    console.error("Failed to clear stored stats:", error.message);
+  }
 }
 
 function setConnectionStatus(element, text, isOnline) {
@@ -87,29 +134,37 @@ function renderStatsTable(stats) {
   }
 
   statsTableBody.innerHTML = stats
-    .map(
-      (stat) => `
+    .map((stat) => {
+      const collectedAt = stat.collectedAt
+        ? formatDate(stat.collectedAt)
+        : "--";
+      const cpuValue = safeValue(stat.cpu?.model, "--");
+      const memoryValue = safeValue(stat.memory?.usage, "--");
+      const hostValue = safeValue(stat.os?.hostname, "--");
+      const rssValue = safeValue(stat.process?.memoryUsage?.rss, "--");
+
+      return `
         <tr>
-          <td>${formatDate(stat.collectedAt)}</td>
-          <td>${stat.cpu?.model ?? "--"}</td>
-          <td>${stat.memory?.usage ?? "--"}</td>
-          <td>${stat.os?.hostname ?? "--"}</td>
-          <td>${stat.process?.memoryUsage?.rss ?? "--"}</td>
+          <td>${collectedAt}</td>
+          <td>${cpuValue}</td>
+          <td>${memoryValue}</td>
+          <td>${hostValue}</td>
+          <td>${rssValue}</td>
         </tr>
-      `,
-    )
+      `;
+    })
     .join("");
 }
 
 function renderMonitorSnapshot(data) {
-  hostname.textContent = data.os?.hostname ?? "--";
-  nodeVersion.textContent = data.process?.nodeVersion ?? "--";
-  cpuModel.textContent = data.cpu?.model ?? "--";
-  cpuCores.textContent = data.cpu?.cores ?? "--";
-  memoryUsage.textContent = data.memory?.usage ?? "--";
-  processRss.textContent = data.process?.memoryUsage?.rss ?? "--";
-  osPlatform.textContent = `${data.os?.platform ?? "--"} / ${data.os?.release ?? "--"}`;
-  osUptime.textContent = data.os?.uptime ?? "--";
+  hostname.textContent = safeValue(data.os?.hostname, "--");
+  nodeVersion.textContent = safeValue(data.process?.nodeVersion, "--");
+  cpuModel.textContent = safeValue(data.cpu?.model, "--");
+  cpuCores.textContent = safeValue(data.cpu?.cores, "--");
+  memoryUsage.textContent = safeValue(data.memory?.usage, "--");
+  processRss.textContent = safeValue(data.process?.memoryUsage?.rss, "--");
+  osPlatform.textContent = `${safeValue(data.os?.platform, "--")} / ${safeValue(data.os?.release, "--")}`;
+  osUptime.textContent = safeValue(data.os?.uptime, "--");
   latestUpdatePill.textContent = `Updated · ${formatDate(new Date().toISOString())}`;
 }
 
@@ -181,8 +236,15 @@ refreshMonitorButton.addEventListener("click", async () => {
 });
 
 async function bootstrap() {
+  resetDashboardState();
   initializeSocket();
   await Promise.all([loadHealth(), loadMonitor(), loadStats()]);
 }
+
+window.addEventListener("pageshow", async () => {
+  resetDashboardState();
+  await clearStoredDashboardData();
+  await Promise.all([loadHealth(), loadMonitor(), loadStats()]);
+});
 
 bootstrap();

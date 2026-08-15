@@ -131,6 +131,11 @@ export async function cleanupOldStats(retentionHours = 24) {
   return result.deletedCount ?? 0;
 }
 
+export async function clearAllStats() {
+  const result = await Stat.deleteMany({});
+  return result.deletedCount ?? 0;
+}
+
 export function startStatsCollection(intervalMs = 5000) {
   if (statsIntervalId) {
     return statsIntervalId;
