@@ -30,17 +30,7 @@ These routes are used internally by the dashboard frontend:
 - `GET /monitor`
 - `GET /stats`
 
-## Environment Variables
 
-```env
-PORT=5050
-NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/system-view-api
-DATA_CLEANUP_INTERVAL_MS=300000
-DATA_RETENTION_HOURS=24
-SOCKET_EMIT_INTERVAL_MS=5000
-STATS_COLLECTION_INTERVAL_MS=5000
-```
 
 ## Scripts
 
